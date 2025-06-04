@@ -1,15 +1,18 @@
-import { Outlet } from "wouter";
 import { Navigation } from "./navigation";
 import { useAuth } from "@/hooks/use-auth";
 
-export function AppLayout() {
+interface AppLayoutProps {
+  children: React.ReactNode;
+}
+
+export function AppLayout({ children }: AppLayoutProps) {
   const { user } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Navigation />
       <main className="flex-1 max-w-7xl mx-auto w-full p-6">
-        <Outlet />
+        {children}
       </main>
       
       {/* Status Bar */}
