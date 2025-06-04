@@ -289,6 +289,169 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AngelOne SmartAPI routes
+  app.post("/api/angel/auth", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.authenticateAngelOne();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Authentication failed" });
+    }
+  });
+
+  app.get("/api/angel/profile", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.getProfile();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Profile fetch failed" });
+    }
+  });
+
+  app.get("/api/angel/holdings", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.getHoldings();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Holdings fetch failed" });
+    }
+  });
+
+  app.get("/api/angel/positions", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.getPositions();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Positions fetch failed" });
+    }
+  });
+
+  app.post("/api/angel/orders", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.placeOrder(req.body);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Order placement failed" });
+    }
+  });
+
+  app.put("/api/angel/orders/:orderId", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.modifyOrder(req.params.orderId, req.body);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Order modification failed" });
+    }
+  });
+
+  app.delete("/api/angel/orders/:orderId", requireAuth, async (req, res) => {
+    try {
+      const variety = req.query.variety as string || 'NORMAL';
+      const result = await marketDataService.cancelOrder(req.params.orderId, variety);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Order cancellation failed" });
+    }
+  });
+
+  app.get("/api/angel/orders", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.getOrderBook();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Order book fetch failed" });
+    }
+  });
+
+  app.get("/api/angel/trades", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.getTradeBook();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Trade book fetch failed" });
+    }
+  });
+
+  app.get("/api/angel/search", requireAuth, async (req, res) => {
+    try {
+      const searchTerm = req.query.q as string;
+      if (!searchTerm) {
+        return res.status(400).json({ message: "Search term required" });
+      }
+      const result = await marketDataService.searchInstruments(searchTerm);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Search failed" });
+    }
+  });
+
+  app.get("/api/angel/ltp", requireAuth, async (req, res) => {
+    try {
+      const { exchange, symbol, token } = req.query;
+      if (!symbol || !token) {
+        return res.status(400).json({ message: "Symbol and token required" });
+      }
+      const result = await marketDataService.getLTP(
+        exchange as string || 'NSE',
+        symbol as string,
+        token as string
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "LTP fetch failed" });
+    }
+  });
+
+  app.get("/api/angel/historical", requireAuth, async (req, res) => {
+    try {
+      const { token, exchange, duration, fromDate, toDate } = req.query;
+      if (!token || !fromDate || !toDate) {
+        return res.status(400).json({ message: "Token, fromDate, and toDate required" });
+      }
+      const result = await marketDataService.getHistoricalData(
+        token as string,
+        exchange as string || 'NSE',
+        duration as string || 'ONE_DAY',
+        fromDate as string,
+        toDate as string
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Historical data fetch failed" });
+    }
+  });
+
+  app.post("/api/angel/websocket/start", requireAuth, async (req, res) => {
+    try {
+      const tokens = req.body;
+      if (!Array.isArray(tokens)) {
+        return res.status(400).json({ message: "Tokens array required" });
+      }
+      const result = await marketDataService.startWebSocket(tokens);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "WebSocket start failed" });
+    }
+  });
+
+  app.get("/api/angel/live/:token", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.getLiveData(req.params.token);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Live data fetch failed" });
+    }
+  });
+
+  app.post("/api/angel/logout", requireAuth, async (req, res) => {
+    try {
+      const result = await marketDataService.logout();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Logout failed" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
