@@ -4,6 +4,7 @@ import { MetricsGrid } from "@/components/dashboard/metrics-grid";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { StrategiesSidebar } from "@/components/dashboard/strategies-sidebar";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
+import { MarketDataWidget } from "@/components/market-data-widget";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
