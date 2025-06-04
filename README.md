@@ -1,111 +1,146 @@
-# Algorithmic Trading Platform
+# AlgoTrader Pro - Professional Algorithmic Trading Platform
 
-A comprehensive full-stack trading platform with strategy management, backtesting, and live trading capabilities integrated with AngelOne SmartAPI.
+A comprehensive, professional-grade algorithmic trading platform with advanced features for sophisticated investment strategies and real-time market analysis.
 
-## Features
+## 🚀 Key Features
 
-### Core Trading Features
-- **Strategy Management**: Create, edit, and deploy algorithmic trading strategies
-- **Backtesting Engine**: Test strategies against historical data with detailed analytics
-- **Live Trading**: Execute trades in real-time with paper and live trading modes
-- **Portfolio Management**: Track positions, holdings, and performance metrics
-- **Real-time Market Data**: Live price feeds and market data from AngelOne
+### Core Trading Platform
+- **Real-time Market Data**: Live price feeds and market depth
+- **Strategy Management**: Create, test, and deploy custom trading algorithms
+- **Backtesting Engine**: Historical strategy validation with detailed analytics
+- **Live Trading**: Execute strategies with AngelOne SmartAPI integration
+- **Portfolio Management**: Track positions, P&L, and performance metrics
 
-### Technical Features
-- **User Authentication**: Secure session-based authentication
-- **PostgreSQL Database**: Persistent data storage for all trading data
-- **AngelOne Integration**: Complete SmartAPI integration for live trading
-- **Modern UI**: Responsive React interface with shadcn/ui components
-- **Real-time Updates**: WebSocket connections for live data feeds
+### 10 Advanced Professional Features
 
-## Technology Stack
+#### 1. Risk Management & Controls
+- **Position Size Calculator**: Automatic sizing based on account balance and risk percentage
+- **Daily Loss Limits**: Circuit breakers to halt trading after reaching thresholds
+- **Drawdown Monitoring**: Real-time tracking of portfolio drawdowns
+- **Risk Metrics Dashboard**: Sharpe ratio, VaR, volatility analysis
+
+#### 2. Advanced Analytics & ML Integration
+- **Price Prediction Models**: AI-powered forecasting using machine learning
+- **Sentiment Analysis**: Multi-source sentiment from news, social media, and technical indicators
+- **Anomaly Detection**: Real-time detection of unusual market patterns
+- **Volatility Forecasting**: GARCH-based volatility prediction
+
+#### 3. Real-time Alerts & Notifications
+- **Price Alerts**: Custom price level and technical indicator alerts
+- **System Notifications**: Trade executions, risk breaches, strategy events
+- **Multi-channel Delivery**: In-app, email, SMS, and push notifications
+- **Smart Filtering**: Severity-based alert prioritization
+
+#### 4. Strategy Templates Library
+- **Pre-built Strategies**: SMA Crossover, RSI Mean Reversion, Bollinger Breakouts, Pairs Trading
+- **Parameter Customization**: Adjustable strategy parameters with validation
+- **Code Generation**: Automatic strategy code generation from templates
+- **Performance Estimates**: Expected returns and market condition guidance
+
+#### 5. Advanced Order Types
+- **Bracket Orders**: Automated stop-loss and take-profit with entry orders
+- **Trailing Stop-Loss**: Dynamic stops that follow price movements
+- **Iceberg Orders**: Large orders split into smaller visible chunks
+- **Time-based Orders**: Scheduled execution at specific times or intervals
+
+#### 6. Enhanced Market Data
+- **Real-time Price Feeds**: Live market data via AngelOne SmartAPI
+- **Historical Data Access**: Extensive historical market data for backtesting
+- **Technical Indicators**: Built-in calculation of popular technical indicators
+- **Market Depth**: Level 2 order book data
+
+#### 7. Professional Analytics Dashboard
+- **Performance Attribution**: Returns analysis by strategy, sector, and timeframe
+- **Risk Decomposition**: Detailed risk metrics and factor analysis
+- **Trade Journal**: Comprehensive logging with entry/exit analysis
+- **Custom Reports**: Automated daily, weekly, and monthly reports
+
+#### 8. Compliance & Audit Trail
+- **Complete Trade Logging**: Full audit trail of all trading decisions
+- **Risk Compliance**: Automated compliance checking and reporting
+- **Data Security**: Secure handling of sensitive trading data
+- **Backup & Recovery**: Automated data backup with disaster recovery
+
+#### 9. Multi-timeframe Support
+- **Multiple Timeframes**: Support for 1min to monthly timeframes
+- **Cross-timeframe Analysis**: Strategies using multiple timeframe data
+- **Real-time Processing**: Efficient handling of high-frequency data
+- **Historical Replay**: Strategy testing with historical market replay
+
+#### 10. Professional User Interface
+- **Modern React Frontend**: Responsive design with dark/light themes
+- **Real-time Updates**: Live data updates across all components
+- **Interactive Charts**: Advanced charting with technical analysis tools
+- **Mobile Responsive**: Optimized for desktop, tablet, and mobile devices
+
+## 🛠 Technology Stack
 
 ### Backend
 - **Node.js** with TypeScript
-- **Express.js** web framework
-- **PostgreSQL** database with Drizzle ORM
-- **Python** service layer for AngelOne API
-- **Session-based authentication**
+- **Express.js** for API server
+- **PostgreSQL** for persistent data storage
+- **Drizzle ORM** for database operations
+- **Python Services** for AngelOne SmartAPI integration
 
 ### Frontend
-- **React** with TypeScript
-- **Vite** build tool
-- **TailwindCSS** for styling
+- **React 18** with TypeScript
+- **Tailwind CSS** for styling
 - **shadcn/ui** component library
 - **TanStack Query** for data fetching
+- **Recharts** for data visualization
 - **Wouter** for routing
 
-### External Integrations
+### External Services
 - **AngelOne SmartAPI** for live trading and market data
-- **Python smartapi-python** library for API communication
+- **Machine Learning** models for predictions and analytics
+- **Real-time WebSocket** connections for live data
 
-## Prerequisites
+## 📋 Prerequisites
 
-- Node.js 18+ 
-- Python 3.11+
+- Node.js 18+ and npm
 - PostgreSQL database
 - AngelOne trading account with API access
+- Python 3.8+ (for AngelOne service integration)
 
-## Installation
+## 🚀 Quick Start
 
-### 1. Clone and Install Dependencies
-
+### 1. Environment Setup
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd algorithmic-trading-platform
+cd algotrader-pro
 
-# Install Node.js dependencies
+# Install dependencies
 npm install
 
-# Install Python dependencies (automatically handled by the platform)
+# Install Python dependencies
+pip install -r requirements.txt
 ```
 
-### 2. Database Setup
-
-The platform uses PostgreSQL for persistent data storage.
-
+### 2. Database Configuration
 ```bash
-# Ensure PostgreSQL is running
-# Create a database for the application
+# Create PostgreSQL database
+createdb algotrader
 
-# Push the database schema
+# Set database URL in environment
+export DATABASE_URL="postgresql://user:password@localhost:5432/algotrader"
+
+# Push database schema
 npm run db:push
 ```
 
-### 3. Environment Configuration
+### 3. AngelOne API Setup
+To enable live trading and real-time market data, you'll need AngelOne API credentials:
 
-Create a `.env` file in the root directory with the following variables:
+1. Open an AngelOne trading account
+2. Generate API credentials from their developer portal
+3. Provide the following credentials when prompted:
+   - ANGEL_ONE_API_KEY
+   - ANGEL_ONE_CLIENT_ID
+   - ANGEL_ONE_PASSWORD
+   - ANGEL_ONE_TOTP_SECRET
 
-```env
-# Database Configuration
-DATABASE_URL=postgresql://username:password@host:port/database_name
-
-# AngelOne SmartAPI Configuration
-ANGEL_ONE_API_KEY=your_angel_one_api_key
-ANGEL_ONE_USERNAME=your_angel_one_username
-ANGEL_ONE_PASSWORD=your_angel_one_password
-ANGEL_ONE_TOTP_SECRET=your_angel_one_totp_secret
-ANGEL_ONE_CLIENT_CODE=your_angel_one_client_code
-
-# Application Configuration
-NODE_ENV=development
-SESSION_SECRET=your_secure_session_secret
-ANGEL_API_BASE_URL=http://localhost:5001
-```
-
-### 4. AngelOne API Setup
-
-To enable live trading, you need to set up AngelOne SmartAPI:
-
-1. **Create AngelOne Account**: Sign up for a trading account at AngelOne
-2. **Apply for API Access**: Request API access through AngelOne developer portal
-3. **Get API Credentials**: Obtain your API key, username, password, and TOTP secret
-4. **Configure TOTP**: Set up two-factor authentication and get your TOTP secret key
-5. **Update Environment Variables**: Add all credentials to your `.env` file
-
-### 5. Start the Application
-
+### 4. Start the Application
 ```bash
 # Start the development server
 npm run dev
@@ -113,167 +148,146 @@ npm run dev
 
 The application will be available at `http://localhost:5000`
 
-## Usage
+## 📊 Usage Guide
 
 ### Getting Started
+1. **Register/Login**: Create an account or log in to existing account
+2. **Configure AngelOne**: Set up your broker credentials in the settings
+3. **Create Strategy**: Build your first trading strategy or use a template
+4. **Backtest**: Validate your strategy with historical data
+5. **Paper Trade**: Test with simulated money before going live
+6. **Live Trading**: Deploy your strategy with real money
 
-1. **Register Account**: Create a new user account
-2. **Login**: Authenticate with your credentials
-3. **Connect AngelOne**: Configure your AngelOne API credentials
-4. **Create Strategy**: Build your first trading strategy
-5. **Backtest**: Test your strategy against historical data
-6. **Deploy**: Activate your strategy for live trading
+### Risk Management
+- Set daily loss limits in Risk Management dashboard
+- Configure position sizing rules based on your risk tolerance
+- Monitor drawdown and volatility metrics regularly
+- Use stop-loss and take-profit orders for every trade
 
-### Strategy Development
+### Advanced Features
+- **ML Analytics**: Generate price predictions and sentiment analysis
+- **Advanced Orders**: Use bracket orders and trailing stops for better execution
+- **Alerts**: Set up price and system alerts for important events
+- **Strategy Templates**: Quick-start with proven strategy templates
 
-1. Navigate to the **Strategies** page
-2. Click **Create Strategy** 
-3. Define your strategy parameters:
-   - Strategy name and description
-   - Trading logic code
-   - Risk management parameters
-   - Position sizing rules
-4. Save and test your strategy
+## 🔧 Configuration
 
-### Backtesting
-
-1. Go to the **Backtesting** page
-2. Select a strategy to test
-3. Configure backtest parameters:
-   - Date range
-   - Initial capital
-   - Commission settings
-4. Run the backtest and analyze results
-
-### Live Trading
-
-1. Navigate to **Live Trading** page
-2. Connect to AngelOne API
-3. Switch between Paper Trading and Live Trading modes
-4. Monitor active strategies and positions
-5. Place manual orders if needed
-
-## Database Schema
-
-The platform uses the following main tables:
-
-- **users**: User authentication and profile data
-- **strategies**: Trading strategy definitions and code
-- **backtests**: Backtest configurations and results
-- **trades**: Executed trade records
-- **positions**: Current portfolio positions
-- **portfolio_history**: Historical portfolio value tracking
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-- `POST /api/auth/logout` - User logout
-
-### Strategies
-- `GET /api/strategies` - Get user strategies
-- `POST /api/strategies` - Create new strategy
-- `PUT /api/strategies/:id` - Update strategy
-- `DELETE /api/strategies/:id` - Delete strategy
-
-### Backtesting
-- `GET /api/backtests` - Get backtest history
-- `POST /api/backtests` - Run new backtest
-- `GET /api/backtests/:id` - Get backtest details
-
-### Trading
-- `GET /api/trades` - Get trade history
-- `POST /api/trades` - Execute trade
-- `GET /api/portfolio/positions` - Get positions
-- `GET /api/portfolio/value` - Get portfolio value
-
-### AngelOne Integration
-- `POST /api/angel/auth` - Authenticate with AngelOne
-- `GET /api/angel/holdings` - Get holdings
-- `GET /api/angel/positions` - Get positions
-- `POST /api/angel/orders` - Place order
-- `GET /api/angel/orders` - Get order book
-- `GET /api/angel/search` - Search instruments
-- `GET /api/angel/ltp` - Get live prices
-
-## Security Considerations
-
-- All API credentials are stored as environment variables
-- Session-based authentication with secure cookies
-- Database passwords and sensitive data are encrypted
-- API requests are validated and sanitized
-- CORS protection for cross-origin requests
-
-## Development
-
-### Database Migrations
-
+### Environment Variables
 ```bash
-# Push schema changes to database
-npm run db:push
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/algotrader
 
-# Generate migration files (if needed)
-npm run db:generate
+# AngelOne API (set when prompted)
+ANGEL_ONE_API_KEY=your_api_key
+ANGEL_ONE_CLIENT_ID=your_client_id
+ANGEL_ONE_PASSWORD=your_password
+ANGEL_ONE_TOTP_SECRET=your_totp_secret
+
+# Optional: External Services
+EMAIL_SERVICE_KEY=your_email_key
+SMS_SERVICE_KEY=your_sms_key
 ```
 
-### Code Structure
+### Database Schema
+The platform uses PostgreSQL with the following key tables:
+- `users` - User accounts and authentication
+- `strategies` - Trading strategy definitions
+- `backtests` - Backtest results and analytics
+- `trades` - Live and paper trade records
+- `positions` - Current portfolio positions
+- `portfolio_history` - Historical portfolio snapshots
 
+## 📈 Strategy Development
+
+### Creating Custom Strategies
+```javascript
+// Example strategy structure
+class MyStrategy {
+  constructor(params) {
+    this.params = params;
+  }
+
+  analyze(marketData) {
+    // Your strategy logic here
+    return {
+      action: 'BUY' | 'SELL' | 'HOLD',
+      quantity: number,
+      price: number,
+      reason: string
+    };
+  }
+}
 ```
-├── client/               # React frontend
-│   ├── src/
-│   │   ├── components/   # Reusable UI components
-│   │   ├── pages/        # Page components
-│   │   ├── hooks/        # Custom React hooks
-│   │   └── lib/          # Utility libraries
-├── server/               # Node.js backend
-│   ├── services/         # Business logic services
-│   ├── routes.ts         # API route definitions
-│   ├── storage.ts        # Database operations
-│   └── index.ts          # Server entry point
-├── shared/               # Shared TypeScript types
-│   └── schema.ts         # Database schema and types
-```
 
-## Troubleshooting
+### Using Strategy Templates
+1. Navigate to Strategy Templates in the Advanced menu
+2. Choose from pre-built templates (SMA Crossover, RSI Mean Reversion, etc.)
+3. Customize parameters to fit your trading style
+4. Generate and deploy the strategy code
 
-### Database Connection Issues
-- Verify PostgreSQL is running
-- Check DATABASE_URL format
-- Ensure database exists and user has permissions
+## 🛡 Security & Compliance
 
-### AngelOne API Issues
-- Verify all API credentials are correct
-- Check TOTP secret is properly configured
-- Ensure API access is enabled in AngelOne account
-- Confirm trading account is active
+### Data Security
+- All API keys and credentials are encrypted
+- Secure database connections with SSL
+- Session-based authentication with secure cookies
+- Regular security audits and updates
 
-### Application Errors
-- Check console logs for detailed error messages
-- Verify all environment variables are set
-- Ensure all dependencies are installed
-- Check network connectivity for API calls
+### Trading Compliance
+- Complete audit trail of all trading activities
+- Risk compliance monitoring and alerts
+- Automated regulatory reporting capabilities
+- Data backup and disaster recovery procedures
 
-## Contributing
+## 📞 Support & Documentation
+
+### API Documentation
+- Complete REST API documentation available in `/docs`
+- WebSocket API for real-time data streams
+- Strategy development guidelines and examples
+
+### Common Issues
+- **Connection Issues**: Check AngelOne API credentials and network connectivity
+- **Performance**: Optimize strategies for high-frequency trading requirements
+- **Data Quality**: Validate market data sources and handle missing data gracefully
+
+## 🤝 Contributing
+
+We welcome contributions to improve AlgoTrader Pro:
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
+3. Implement your changes with tests
+4. Submit a pull request with detailed description
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Support
+## ⚠️ Disclaimer
 
-For support and questions:
-- Check the troubleshooting section above
-- Review the API documentation
-- Contact the development team
+**Trading Risk Warning**: Trading in financial markets involves substantial risk and may not be suitable for all investors. Past performance is not indicative of future results. Only trade with money you can afford to lose. This software is provided for educational and informational purposes only.
 
-## Disclaimer
+**No Financial Advice**: This platform does not provide financial advice. All trading decisions are the responsibility of the user. Consult with qualified financial advisors before making investment decisions.
 
-This trading platform is for educational and development purposes. Always test thoroughly with paper trading before using real money. Trading involves risk and you may lose money. Use at your own risk.
+---
+
+## 🎯 Roadmap
+
+### Upcoming Features
+- Options trading support
+- Cryptocurrency market integration
+- Advanced portfolio optimization algorithms
+- Mobile application (iOS/Android)
+- Social trading and copy trading features
+- Enhanced machine learning models
+
+### Performance Optimizations
+- High-frequency trading support
+- Latency optimization for live trading
+- Enhanced data compression and caching
+- Distributed computing for backtesting
+
+---
+
+**AlgoTrader Pro** - Empowering traders with professional-grade algorithmic trading technology.

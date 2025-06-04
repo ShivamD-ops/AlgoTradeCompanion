@@ -13,6 +13,11 @@ import Strategies from "@/pages/strategies";
 import Backtesting from "@/pages/backtesting";
 import LiveTrading from "@/pages/live-trading";
 import Analytics from "@/pages/analytics";
+import { StrategyTemplates } from "@/pages/advanced/strategy-templates";
+import { AnalyticsDashboard } from "@/components/analytics/analytics-dashboard";
+import { RiskDashboard } from "@/components/risk-management/risk-dashboard";
+import { AlertsCenter } from "@/components/alerts/alerts-center";
+import { AdvancedOrders } from "@/components/advanced-orders/advanced-orders";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -67,6 +72,13 @@ function Router() {
       <Route path="/backtesting" component={() => <ProtectedRoute component={Backtesting} />} />
       <Route path="/live-trading" component={() => <ProtectedRoute component={LiveTrading} />} />
       <Route path="/analytics" component={() => <ProtectedRoute component={Analytics} />} />
+      
+      {/* Advanced Features */}
+      <Route path="/advanced-analytics" component={() => <ProtectedRoute component={AnalyticsDashboard} />} />
+      <Route path="/risk-management" component={() => <ProtectedRoute component={RiskDashboard} />} />
+      <Route path="/alerts" component={() => <ProtectedRoute component={AlertsCenter} />} />
+      <Route path="/advanced-orders" component={() => <ProtectedRoute component={AdvancedOrders} />} />
+      <Route path="/strategy-templates" component={() => <ProtectedRoute component={StrategyTemplates} />} />
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />

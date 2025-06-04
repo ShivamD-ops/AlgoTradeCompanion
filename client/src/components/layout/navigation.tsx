@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { TrendingUp, LogOut, User } from "lucide-react";
+import { TrendingUp, LogOut, User, ChevronDown, Brain, Shield, Bell, Layers, Code } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +22,14 @@ export function Navigation() {
     { path: "/backtesting", label: "Backtesting" },
     { path: "/live-trading", label: "Live Trading" },
     { path: "/analytics", label: "Analytics" },
+  ];
+
+  const advancedItems = [
+    { path: "/advanced-analytics", label: "ML Analytics" },
+    { path: "/risk-management", label: "Risk Management" },
+    { path: "/alerts", label: "Alerts Center" },
+    { path: "/advanced-orders", label: "Advanced Orders" },
+    { path: "/strategy-templates", label: "Strategy Templates" },
   ];
 
   const getInitials = (firstName: string, lastName: string) => {
@@ -51,6 +59,32 @@ export function Navigation() {
                 </a>
               </Link>
             ))}
+            
+            {/* Advanced Features Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="pb-1 text-muted-foreground hover:text-foreground">
+                  Advanced
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {advancedItems.map((item) => (
+                  <DropdownMenuItem key={item.path} asChild>
+                    <Link href={item.path}>
+                      <a className="flex items-center w-full">
+                        {item.path === '/advanced-analytics' && <Brain className="w-4 h-4 mr-2" />}
+                        {item.path === '/risk-management' && <Shield className="w-4 h-4 mr-2" />}
+                        {item.path === '/alerts' && <Bell className="w-4 h-4 mr-2" />}
+                        {item.path === '/advanced-orders' && <Layers className="w-4 h-4 mr-2" />}
+                        {item.path === '/strategy-templates' && <Code className="w-4 h-4 mr-2" />}
+                        {item.label}
+                      </a>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
 
