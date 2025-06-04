@@ -1,23 +1,6 @@
-import {
-  users,
-  strategies,
-  backtests,
-  trades,
-  positions,
-  portfolioHistory,
-  type User,
-  type InsertUser,
-  type Strategy,
-  type InsertStrategy,
-  type Backtest,
-  type InsertBacktest,
-  type Trade,
-  type InsertTrade,
-  type Position,
-  type InsertPosition,
-  type PortfolioHistory,
-  type InsertPortfolioHistory,
-} from "@shared/schema";
+import { users, strategies, backtests, trades, positions, portfolioHistory, type User, type InsertUser, type Strategy, type InsertStrategy, type Backtest, type InsertBacktest, type Trade, type InsertTrade, type Position, type InsertPosition, type PortfolioHistory, type InsertPortfolioHistory } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -58,197 +41,164 @@ export interface IStorage {
   createPortfolioHistory(history: InsertPortfolioHistory): Promise<PortfolioHistory>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private strategies: Map<number, Strategy>;
-  private backtests: Map<number, Backtest>;
-  private trades: Map<number, Trade>;
-  private positions: Map<number, Position>;
-  private portfolioHistory: Map<number, PortfolioHistory>;
-  private currentId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.strategies = new Map();
-    this.backtests = new Map();
-    this.trades = new Map();
-    this.positions = new Map();
-    this.portfolioHistory = new Map();
-    this.currentId = 1;
-  }
-
-  // User operations
+export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.email === email);
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = {
-      ...insertUser,
-      id,
-      createdAt: new Date(),
-    };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   // Strategy operations
   async getStrategy(id: number): Promise<Strategy | undefined> {
-    return this.strategies.get(id);
+    const [strategy] = await db.select().from(strategies).where(eq(strategies.id, id));
+    return strategy || undefined;
   }
 
   async getStrategiesByUser(userId: number): Promise<Strategy[]> {
-    return Array.from(this.strategies.values()).filter(strategy => strategy.userId === userId);
+    return await db.select().from(strategies).where(eq(strategies.userId, userId));
   }
 
   async createStrategy(insertStrategy: InsertStrategy): Promise<Strategy> {
-    const id = this.currentId++;
-    const now = new Date();
-    const strategy: Strategy = {
-      ...insertStrategy,
-      id,
-      createdAt: now,
-      updatedAt: now,
-    };
-    this.strategies.set(id, strategy);
+    const [strategy] = await db
+      .insert(strategies)
+      .values(insertStrategy)
+      .returning();
     return strategy;
   }
 
   async updateStrategy(id: number, updates: Partial<InsertStrategy>): Promise<Strategy | undefined> {
-    const strategy = this.strategies.get(id);
-    if (!strategy) return undefined;
-
-    const updatedStrategy: Strategy = {
-      ...strategy,
-      ...updates,
-      updatedAt: new Date(),
-    };
-    this.strategies.set(id, updatedStrategy);
-    return updatedStrategy;
+    const [strategy] = await db
+      .update(strategies)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(strategies.id, id))
+      .returning();
+    return strategy || undefined;
   }
 
   async deleteStrategy(id: number): Promise<boolean> {
-    return this.strategies.delete(id);
+    const result = await db.delete(strategies).where(eq(strategies.id, id));
+    return result.rowCount > 0;
   }
 
   // Backtest operations
   async getBacktest(id: number): Promise<Backtest | undefined> {
-    return this.backtests.get(id);
+    const [backtest] = await db.select().from(backtests).where(eq(backtests.id, id));
+    return backtest || undefined;
   }
 
   async getBacktestsByUser(userId: number): Promise<Backtest[]> {
-    return Array.from(this.backtests.values()).filter(backtest => backtest.userId === userId);
+    return await db.select().from(backtests).where(eq(backtests.userId, userId));
   }
 
   async getBacktestsByStrategy(strategyId: number): Promise<Backtest[]> {
-    return Array.from(this.backtests.values()).filter(backtest => backtest.strategyId === strategyId);
+    return await db.select().from(backtests).where(eq(backtests.strategyId, strategyId));
   }
 
   async createBacktest(insertBacktest: InsertBacktest): Promise<Backtest> {
-    const id = this.currentId++;
-    const backtest: Backtest = {
-      ...insertBacktest,
-      id,
-      createdAt: new Date(),
-    };
-    this.backtests.set(id, backtest);
+    const [backtest] = await db
+      .insert(backtests)
+      .values(insertBacktest)
+      .returning();
     return backtest;
   }
 
   // Trade operations
   async getTrade(id: number): Promise<Trade | undefined> {
-    return this.trades.get(id);
+    const [trade] = await db.select().from(trades).where(eq(trades.id, id));
+    return trade || undefined;
   }
 
   async getTradesByUser(userId: number): Promise<Trade[]> {
-    return Array.from(this.trades.values()).filter(trade => trade.userId === userId);
+    return await db.select().from(trades).where(eq(trades.userId, userId));
   }
 
   async getTradesByStrategy(strategyId: number): Promise<Trade[]> {
-    return Array.from(this.trades.values()).filter(trade => trade.strategyId === strategyId);
+    return await db.select().from(trades).where(eq(trades.strategyId, strategyId));
   }
 
   async createTrade(insertTrade: InsertTrade): Promise<Trade> {
-    const id = this.currentId++;
-    const trade: Trade = {
-      ...insertTrade,
-      id,
-      executedAt: new Date(),
-    };
-    this.trades.set(id, trade);
+    const [trade] = await db
+      .insert(trades)
+      .values(insertTrade)
+      .returning();
     return trade;
   }
 
   // Position operations
   async getPosition(id: number): Promise<Position | undefined> {
-    return this.positions.get(id);
+    const [position] = await db.select().from(positions).where(eq(positions.id, id));
+    return position || undefined;
   }
 
   async getPositionsByUser(userId: number): Promise<Position[]> {
-    return Array.from(this.positions.values()).filter(position => position.userId === userId);
+    return await db.select().from(positions).where(eq(positions.userId, userId));
   }
 
   async getPositionByUserAndSymbol(userId: number, symbol: string): Promise<Position | undefined> {
-    return Array.from(this.positions.values()).find(
-      position => position.userId === userId && position.symbol === symbol
-    );
+    const [position] = await db
+      .select()
+      .from(positions)
+      .where(eq(positions.userId, userId))
+      .where(eq(positions.symbol, symbol));
+    return position || undefined;
   }
 
   async createPosition(insertPosition: InsertPosition): Promise<Position> {
-    const id = this.currentId++;
-    const position: Position = {
-      ...insertPosition,
-      id,
-      updatedAt: new Date(),
-    };
-    this.positions.set(id, position);
+    const [position] = await db
+      .insert(positions)
+      .values(insertPosition)
+      .returning();
     return position;
   }
 
   async updatePosition(id: number, updates: Partial<InsertPosition>): Promise<Position | undefined> {
-    const position = this.positions.get(id);
-    if (!position) return undefined;
-
-    const updatedPosition: Position = {
-      ...position,
-      ...updates,
-      updatedAt: new Date(),
-    };
-    this.positions.set(id, updatedPosition);
-    return updatedPosition;
+    const [position] = await db
+      .update(positions)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(positions.id, id))
+      .returning();
+    return position || undefined;
   }
 
   async deletePosition(id: number): Promise<boolean> {
-    return this.positions.delete(id);
+    const result = await db.delete(positions).where(eq(positions.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   // Portfolio history operations
   async getPortfolioHistory(userId: number, limit: number = 100): Promise<PortfolioHistory[]> {
-    return Array.from(this.portfolioHistory.values())
-      .filter(history => history.userId === userId)
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      .slice(0, limit);
+    return await db
+      .select()
+      .from(portfolioHistory)
+      .where(eq(portfolioHistory.userId, userId))
+      .orderBy(portfolioHistory.timestamp)
+      .limit(limit);
   }
 
   async createPortfolioHistory(insertHistory: InsertPortfolioHistory): Promise<PortfolioHistory> {
-    const id = this.currentId++;
-    const history: PortfolioHistory = {
-      ...insertHistory,
-      id,
-      timestamp: new Date(),
-    };
-    this.portfolioHistory.set(id, history);
+    const [history] = await db
+      .insert(portfolioHistory)
+      .values(insertHistory)
+      .returning();
     return history;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

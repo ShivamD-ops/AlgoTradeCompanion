@@ -1,4 +1,5 @@
 import { pgTable, text, serial, integer, boolean, timestamp, real, json } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -82,6 +83,60 @@ export const portfolioHistory = pgTable("portfolio_history", {
   cash: real("cash").notNull(),
   timestamp: timestamp("timestamp").defaultNow().notNull(),
 });
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  strategies: many(strategies),
+  backtests: many(backtests),
+  trades: many(trades),
+  positions: many(positions),
+  portfolioHistory: many(portfolioHistory),
+}));
+
+export const strategiesRelations = relations(strategies, ({ one, many }) => ({
+  user: one(users, {
+    fields: [strategies.userId],
+    references: [users.id],
+  }),
+  backtests: many(backtests),
+  trades: many(trades),
+}));
+
+export const backtestsRelations = relations(backtests, ({ one }) => ({
+  user: one(users, {
+    fields: [backtests.userId],
+    references: [users.id],
+  }),
+  strategy: one(strategies, {
+    fields: [backtests.strategyId],
+    references: [strategies.id],
+  }),
+}));
+
+export const tradesRelations = relations(trades, ({ one }) => ({
+  user: one(users, {
+    fields: [trades.userId],
+    references: [users.id],
+  }),
+  strategy: one(strategies, {
+    fields: [trades.strategyId],
+    references: [strategies.id],
+  }),
+}));
+
+export const positionsRelations = relations(positions, ({ one }) => ({
+  user: one(users, {
+    fields: [positions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const portfolioHistoryRelations = relations(portfolioHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [portfolioHistory.userId],
+    references: [users.id],
+  }),
+}));
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
