@@ -5,6 +5,11 @@ import { authService } from "./services/auth";
 import { tradingService } from "./services/trading";
 import { backtestingService } from "./services/backtesting";
 import { marketDataService } from "./services/market-data";
+import { riskManagementService } from "./services/risk-management";
+import { alertsService } from "./services/alerts";
+import { strategyTemplatesService } from "./services/strategy-templates";
+import { advancedOrdersService } from "./services/advanced-orders";
+import { mlAnalyticsService } from "./services/ml-analytics";
 import { storage } from "./storage";
 import { 
   insertUserSchema, 
@@ -449,6 +454,230 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(result);
     } catch (error) {
       res.status(500).json({ message: error instanceof Error ? error.message : "Logout failed" });
+    }
+  });
+
+  // Risk Management Routes
+  app.post("/api/risk/position-size", requireAuth, async (req, res) => {
+    try {
+      const { symbol, currentPrice, side, customRiskParams } = req.body;
+      const result = await riskManagementService.calculatePositionSize(
+        req.session.userId!,
+        symbol,
+        currentPrice,
+        side,
+        customRiskParams
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Position size calculation failed" });
+    }
+  });
+
+  app.get("/api/risk/daily-loss", requireAuth, async (req, res) => {
+    try {
+      const result = await riskManagementService.checkDailyLossLimit(req.session.userId!);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Daily loss check failed" });
+    }
+  });
+
+  app.get("/api/risk/metrics", requireAuth, async (req, res) => {
+    try {
+      const result = await riskManagementService.getPortfolioRiskMetrics(req.session.userId!);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Risk metrics calculation failed" });
+    }
+  });
+
+  // Alerts Routes
+  app.post("/api/alerts/price", requireAuth, async (req, res) => {
+    try {
+      const { symbol, alertType, targetValue, message } = req.body;
+      const result = await alertsService.createPriceAlert(
+        req.session.userId!,
+        symbol,
+        alertType,
+        targetValue,
+        message
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Price alert creation failed" });
+    }
+  });
+
+  app.get("/api/alerts", requireAuth, async (req, res) => {
+    try {
+      const unreadOnly = req.query.unreadOnly === 'true';
+      const result = await alertsService.getUserAlerts(req.session.userId!, unreadOnly);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Failed to get alerts" });
+    }
+  });
+
+  app.put("/api/alerts/:id/read", requireAuth, async (req, res) => {
+    try {
+      const result = await alertsService.markAlertAsRead(parseInt(req.params.id));
+      res.json({ success: result });
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Failed to mark alert as read" });
+    }
+  });
+
+  // Strategy Templates Routes
+  app.get("/api/strategy-templates", requireAuth, async (req, res) => {
+    try {
+      const templates = strategyTemplatesService.getTemplates();
+      res.json(templates);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Failed to get templates" });
+    }
+  });
+
+  app.get("/api/strategy-templates/:id", requireAuth, async (req, res) => {
+    try {
+      const template = strategyTemplatesService.getTemplate(req.params.id);
+      if (!template) {
+        return res.status(404).json({ message: "Template not found" });
+      }
+      res.json(template);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Failed to get template" });
+    }
+  });
+
+  app.post("/api/strategy-templates/:id/create", requireAuth, async (req, res) => {
+    try {
+      const { customParameters } = req.body;
+      const result = strategyTemplatesService.createStrategyFromTemplate(req.params.id, customParameters);
+      if (!result) {
+        return res.status(404).json({ message: "Template not found" });
+      }
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Failed to create strategy from template" });
+    }
+  });
+
+  // Advanced Orders Routes
+  app.post("/api/orders/bracket", requireAuth, async (req, res) => {
+    try {
+      const { symbol, quantity, entryPrice, stopLoss, takeProfit } = req.body;
+      const result = await advancedOrdersService.createBracketOrder(
+        req.session.userId!,
+        symbol,
+        quantity,
+        entryPrice,
+        stopLoss,
+        takeProfit
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Bracket order creation failed" });
+    }
+  });
+
+  app.post("/api/orders/trailing-stop", requireAuth, async (req, res) => {
+    try {
+      const { symbol, quantity, trailAmount, trailPercent } = req.body;
+      const result = await advancedOrdersService.createTrailingStopOrder(
+        req.session.userId!,
+        symbol,
+        quantity,
+        trailAmount,
+        trailPercent
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Trailing stop creation failed" });
+    }
+  });
+
+  app.post("/api/orders/iceberg", requireAuth, async (req, res) => {
+    try {
+      const { symbol, totalQuantity, visibleQuantity, price, side } = req.body;
+      const result = await advancedOrdersService.createIcebergOrder(
+        req.session.userId!,
+        symbol,
+        totalQuantity,
+        visibleQuantity,
+        price,
+        side
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Iceberg order creation failed" });
+    }
+  });
+
+  app.post("/api/orders/time-based", requireAuth, async (req, res) => {
+    try {
+      const { symbol, quantity, side, scheduleType, options } = req.body;
+      const result = await advancedOrdersService.createTimeBasedOrder(
+        req.session.userId!,
+        symbol,
+        quantity,
+        side,
+        scheduleType,
+        options
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Time-based order creation failed" });
+    }
+  });
+
+  // ML Analytics Routes
+  app.get("/api/analytics/predictions", requireAuth, async (req, res) => {
+    try {
+      const { symbol } = req.query;
+      const result = await mlAnalyticsService.getMarketPredictions(symbol as string);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Failed to get predictions" });
+    }
+  });
+
+  app.post("/api/analytics/predict/:symbol", requireAuth, async (req, res) => {
+    try {
+      const { timeframe } = req.body;
+      const result = await mlAnalyticsService.generatePricePrediction(req.params.symbol, timeframe);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Prediction generation failed" });
+    }
+  });
+
+  app.get("/api/analytics/anomalies", requireAuth, async (req, res) => {
+    try {
+      const { resolved } = req.query;
+      const result = await mlAnalyticsService.getAnomalies(resolved === 'true' ? true : resolved === 'false' ? false : undefined);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Failed to get anomalies" });
+    }
+  });
+
+  app.get("/api/analytics/sentiment", requireAuth, async (req, res) => {
+    try {
+      const { symbol } = req.query;
+      const result = await mlAnalyticsService.getSentimentAnalysis(symbol as string);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Failed to get sentiment analysis" });
+    }
+  });
+
+  app.post("/api/analytics/sentiment/:symbol", requireAuth, async (req, res) => {
+    try {
+      const result = await mlAnalyticsService.generateSentimentAnalysis(req.params.symbol);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Sentiment analysis generation failed" });
     }
   });
 
