@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 222 84% 5%; /* #0F172A */
+  --foreground: 210 40% 98%; /* #F8FAFC */
+  --muted: 215 32% 27%; /* #334155 */
+  --muted-foreground: 215 20% 65%; /* #94A3B8 */
+  --popover: 224 71% 4%; /* #0F172A */
+  --popover-foreground: 210 40% 98%; /* #F8FAFC */
+  --card: 215 28% 17%; /* #1E293B */
+  --card-foreground: 210 40% 98%; /* #F8FAFC */
+  --border: 215 32% 27%; /* #334155 */
+  --input: 215 32% 27%; /* #334155 */
+  --primary: 217 91% 60%; /* #2563EB */
+  --primary-foreground: 222 84% 5%; /* #0F172A */
+  --secondary: 215 25% 27%; /* #374151 */
+  --secondary-foreground: 210 40% 98%; /* #F8FAFC */
+  --accent: 215 28% 17%; /* #1E293B */
+  --accent-foreground: 210 40% 98%; /* #F8FAFC */
+  --destructive: 0 84% 60%; /* #EF4444 */
+  --destructive-foreground: 210 40% 98%; /* #F8FAFC */
+  --ring: 217 91% 60%; /* #2563EB */
+  --radius: 0.5rem;
+  --chart-1: 142 76% 36%; /* #10B981 */
+  --chart-2: 217 91% 60%; /* #2563EB */
+  --chart-3: 45 93% 47%; /* #F59E0B */
+  --chart-4: 0 84% 60%; /* #EF4444 */
+  --chart-5: 250 84% 60%; /* #8B5CF6 */
+}
+
+.dark {
+  --background: 222 84% 5%; /* #0F172A */
+  --foreground: 210 40% 98%; /* #F8FAFC */
+  --muted: 215 32% 27%; /* #334155 */
+  --muted-foreground: 215 20% 65%; /* #94A3B8 */
+  --popover: 224 71% 4%; /* #0F172A */
+  --popover-foreground: 210 40% 98%; /* #F8FAFC */
+  --card: 215 28% 17%; /* #1E293B */
+  --card-foreground: 210 40% 98%; /* #F8FAFC */
+  --border: 215 32% 27%; /* #334155 */
+  --input: 215 32% 27%; /* #334155 */
+  --primary: 217 91% 60%; /* #2563EB */
+  --primary-foreground: 222 84% 5%; /* #0F172A */
+  --secondary: 215 25% 27%; /* #374151 */
+  --secondary-foreground: 210 40% 98%; /* #F8FAFC */
+  --accent: 215 28% 17%; /* #1E293B */
+  --accent-foreground: 210 40% 98%; /* #F8FAFC */
+  --destructive: 0 84% 60%; /* #EF4444 */
+  --destructive-foreground: 210 40% 98%; /* #F8FAFC */
+  --ring: 217 91% 60%; /* #2563EB */
+  --chart-1: 142 76% 36%; /* #10B981 */
+  --chart-2: 217 91% 60%; /* #2563EB */
+  --chart-3: 45 93% 47%; /* #F59E0B */
+  --chart-4: 0 84% 60%; /* #EF4444 */
+  --chart-5: 250 84% 60%; /* #8B5CF6 */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
+  }
+}
