@@ -4,6 +4,7 @@ import session from "express-session";
 import { authService } from "./services/auth";
 import { tradingService } from "./services/trading";
 import { backtestingService } from "./services/backtesting";
+import { marketDataService } from "./services/market-data";
 import { storage } from "./storage";
 import { 
   insertUserSchema, 
