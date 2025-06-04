@@ -94,7 +94,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteStrategy(id: number): Promise<boolean> {
     const result = await db.delete(strategies).where(eq(strategies.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   // Backtest operations
@@ -155,8 +155,7 @@ export class DatabaseStorage implements IStorage {
     const [position] = await db
       .select()
       .from(positions)
-      .where(eq(positions.userId, userId))
-      .where(eq(positions.symbol, symbol));
+      .where(and(eq(positions.userId, userId), eq(positions.symbol, symbol)));
     return position || undefined;
   }
 
@@ -188,7 +187,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(portfolioHistory)
       .where(eq(portfolioHistory.userId, userId))
-      .orderBy(portfolioHistory.timestamp)
+      .orderBy(desc(portfolioHistory.timestamp))
       .limit(limit);
   }
 
